@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int        @id @default(autoincrement())
+  username String     @unique
+  email    String     @unique
+  password String
+  Merchant Merchant[]
+  Wallet   Wallet[]
+  Payment  Payment[]
+}
+
+model Merchant {
+  id                    Int                     @id @default(autoincrement())
+  userId                Int
+  website               String
+  notifyURL             String
+  user                  User                    @relation(fields: [userId], references: [id])
+  MerchantsOnCurrencies MerchantsOnCurrencies[]
+}
+
+model Wallet {
+  id                  Int                   @id @default(autoincrement())
+  userId              Int
+  currencyId          Int
+  transaction         Transaction           @relation(fields: [transactionId], references: [id])
+  address             String
+  user                User                  @relation(fields: [userId], references: [id])
+  WalletsOnCurrencies WalletsOnCurrencies[]
+  transactionId       Int
+}
+
+model Currency {
+  id                    Int                     @id @default(autoincrement())
+  name                  String
+  abbreviation          String
+  WalletsOnCurrencies   WalletsOnCurrencies[]
+  MerchantsOnCurrencies MerchantsOnCurrencies[]
+}
+
+model Payment {
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  orderId     String
+  priceUSD    Int
+  successURL  String
+  cancelURL   String
+  user        User          @relation(fields: [userId], references: [id])
+  Transaction Transaction[]
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  paymentId   Int
+  description String
+  txnId       Int
+  dest_tag    String
+  status      String
+  confirms    Int
+  amount      Int
+  network     Int
+  walletId    Int
+  paymnet     Payment  @relation(fields: [paymentId], references: [id])
+  Wallet      Wallet[]
+}
+
+model WalletsOnCurrencies {
+  walletId   Int
+  currencyId Int
+  wallet     Wallet   @relation(fields: [walletId], references: [id])
+  currency   Currency @relation(fields: [currencyId], references: [id])
+
+  @@id([walletId, currencyId])
+}
+
+model MerchantsOnCurrencies {
+  merchantId Int
+  currencyId Int
+  merchant   Merchant @relation(fields: [merchantId], references: [id])
+  currency   Currency @relation(fields: [currencyId], references: [id])
+
+  @@id([merchantId, currencyId])
+}
