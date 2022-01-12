@@ -1,1 +1,8 @@
-POST http://localhost:9090/
+POST http://localhost:9090/api/v1/auth/register
+Content-Type: application/json
+
+{
+    "username": "abdullah",
+    "password": "220-38420-83",
+    "email": "sadoksd@osjd"
+}
