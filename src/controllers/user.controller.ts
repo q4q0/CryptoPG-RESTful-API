@@ -29,11 +29,21 @@ const findAllUsers = async (
 
 const findUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.body.params;
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(id) },
+    });
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: `User with id ${id} not found`,
+        statusCode: 404,
+        user: {},
+      });
+    }
     res.status(200).json({
       success: true,
-      message: `User with id ${userId} has been fetched successfully`,
+      message: `User with id ${id} has been fetched successfully`,
       statusCode: 200,
       user: user,
     });
@@ -54,6 +64,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     });
     res.status(201).json({ success: true, user: user });
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };
