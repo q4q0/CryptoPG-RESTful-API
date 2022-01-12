@@ -12,7 +12,11 @@ const prisma = new PrismaClient();
 //     Payment  Payment[]
 //   }
 
-const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
+const findAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const users = await prisma.user.findMany({
       include: { Merchant: true, Wallet: true, Payment: true },
@@ -20,6 +24,21 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json({ success: true, users: users });
   } catch (err) {
     res.status(500).json({ success: false, error: err });
+  }
+};
+
+const findUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.body.params;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    res.status(200).json({
+      success: true,
+      message: `User with id ${userId} has been fetched successfully`,
+      statusCode: 200,
+      user: user,
+    });
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -39,4 +58,4 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { getAllUsers, createUser };
+export default { findAllUsers, createUser, findUser };
