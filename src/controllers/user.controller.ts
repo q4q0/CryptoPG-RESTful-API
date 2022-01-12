@@ -2,16 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-// model User {
-//     id       Int        @id @default(autoincrement())
-//     username String     @unique
-//     email    String     @unique
-//     password String
-//     Merchant Merchant[]
-//     Wallet   Wallet[]
-//     Payment  Payment[]
-//   }
-
 const findAllUsers = async (
   req: Request,
   res: Response,
