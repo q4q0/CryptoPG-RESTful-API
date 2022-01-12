@@ -6,14 +6,23 @@ const errorHandler = async (
   next: NextFunction,
   err: { code: string }
 ) => {
-  if ((err.code = "P2002")) {
-    res.status(409).json({
+  try {
+    if ((err.code = "P2002")) {
+      res.status(409).json({
+        success: false,
+        message: "The user credentials already taken",
+        statusCode: 409,
+      });
+    }
+    next();
+  } catch (err) {
+    res.status(500).json({
       success: false,
-      message: "The user credentials already taken",
-      statusCode: 409,
+      message: "Something went wrong",
+      statusCode: 500,
     });
+    next();
   }
-  next();
 };
 
 export default errorHandler;

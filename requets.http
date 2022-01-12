@@ -7,4 +7,4 @@ Content-Type: application/json
     "email": "sadoks1ewew111d@osjd"
 }
 
-# GET http://localhost:9090/api/v1/user/10
+GET http://localhost:9090/api/v1/user/10
